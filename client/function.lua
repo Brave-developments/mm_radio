@@ -49,7 +49,7 @@ function Radio:SetDefaultData(cid)
         name = nil,
         overlaySizeMultiplier = 50,
         radioSizeMultiplier = 50,
-        allowMovement = false,
+        allowMovement = true,
         playerlist = {
             show = false,
             coords = {
@@ -129,7 +129,7 @@ function Radio:doRadioCheck(items)
     for _, v in pairs(playerItems) do
         if lib.table.contains(Shared.RadioItem, v.name) then
             self.hasRadio = true
-            if v.metadata?.radioId or v.info?.radioId then
+            if (v.metadata and v.metadata.radioId) or (v.info and v.info.radioId) then
                 self.batteryData[#self.batteryData+1] = v[Shared.Inventory == 'ox' and 'metadata' or 'info'].radioId
             end
         end
@@ -174,7 +174,7 @@ function Radio:toggleRadioAnimation(pState)
 	if pState then
 		TriggerEvent("attachItemRadio", "radio01")
 		TaskPlayAnim(cache.ped, "cellphone@", "cellphone_text_read_base", 2.0, 3.0, -1, 49, 0, false, false, false)
-		self.radioProp = CreateObject(`prop_cs_hand_radio`, 1.0, 1.0, 1.0, true, true, false)
+		self.radioProp = CreateObject(GetHashKey('prop_cs_hand_radio'), 1.0, 1.0, 1.0, true, true, false)
 		AttachEntityToEntity(self.radioProp, cache.ped, GetPedBoneIndex(cache.ped, 57005), 0.14, 0.01, -0.02, 110.0, 120.0, -15.0, true, false, false, false, 2, true)
 	else
 		StopAnimTask(cache.ped, "cellphone@", "cellphone_text_read_base", 1.0)
@@ -350,7 +350,7 @@ end
 
 function DisableControls()
     CreateThread(function()
-        while Radio.usingRadio and Radio.userData[Radio.identifier].allowMovement do
+        while Radio.usingRadio and not Radio.userData[Radio.identifier].allowMovement do
             DisableControlAction(0, 1, true)
             DisableControlAction(0, 2, true)
             DisableControlAction(0, 106, true)

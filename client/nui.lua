@@ -94,9 +94,9 @@ RegisterNUICallback('allowMovement', function(data, cb)
     SetResourceKvp('radioSettings2', json.encode(Radio.userData))
     if data then
         SetNuiFocusKeepInput(true)
-        DisableControls()
     else
         SetNuiFocusKeepInput(false)
+        DisableControls()
     end
     cb("ok")
 end)
